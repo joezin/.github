@@ -34,3 +34,45 @@ If your account is less than 24hrs old and you have a question, please try using
 
 If you'd like to learn more about implementing temporary interaction limits in your own orgs and repos, please read up on the official documentation [here](https://docs.github.com/en/communities/moderating-comments-and-conversations/limiting-interactions-in-your-organization).
 
+# 检查权限
+ls -la ~/.git-credentials
+
+# 检查 Git 配置
+git config --list | grep credential
+
+# 检查凭证存储配置
+git config --global credential.helper
+
+# 检查凭证存储配置
+secretservice
+
+# 检查凭证文件
+cat ~/.git-credentials
+
+# 检查 Git 用户信息
+git config --global user.name
+git config --global user.email
+
+# 测试凭证是否生效
+git ls-remote https://github.com/dinhchow/.github.git
+
+# 1. 完全清理所有凭证
+echo "=== 清理所有凭证 ==="
+git config --global --unset-all credential.helper
+rm -f ~/.git-credentials
+security delete-generic-password -a dinhchow -s github.com -l "GitHub" 2>/dev/null || echo "没有找到旧凭证"
+
+# 2. 重新设置凭证管理
+echo "=== 设置凭证管理 ==="
+git config --global credential.helper osxkeychain
+
+# 3. 强制要求重新认证
+echo "=== 测试连接（将提示输入凭证）==="
+git credential reject
+protocol=https
+host=github.com
+
+# 4. 测试连接
+echo "=== 尝试连接 GitHub ==="
+git ls-remote https://github.com/dinhchow/.github.git
+
